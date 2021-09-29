@@ -1,0 +1,41 @@
+help_K <- function(type = "generic") {
+  if (type == "generic") {
+    cat("----- YOU ARE IN THE GENERIC HELP FUNCTION. This programm consists in computing the factor K for a given data in the USDA system. If you want to know more about how this program works you have the following options \n")
+    cat("1. help_K(\"input values\") : Tells you information about how the input values must be\n")
+    cat("2. help_K(\"output values\") : Tells you information about how the output values are given\n")
+  } else if (type == "input values") {
+    cat("----- YOU ARE IN THE INPUT VALUES HELP FUNCTION. The following input values are required:\n")
+    cat("* SandUSDA: percentage of sand in the USDA system of the soil texture.\n")
+    cat("* ClayUSDA: percentage of clay in the USDA system of the soil texture.\n")
+    cat("* SiltUSDA: percentage of silt in the USDA system of the soil texture.\n")
+    cat("* O.M. : organic matter. Must be a value from 0.0 to 4.0 (included) with one decimal.")
+    cat("* Soil structure: must be a number from 1 to 4 with the following meanings: \n")
+    cat ("       1 = very fine granular\n       2 = fine granular\n       3 = moderate or coorse granular\n       4 = blocky, platy, or massive\n")
+    cat("* Permeability: must be a number from 1 to 6 with the following meanings: \n")
+    cat ("       1 = rapid\n       2 = moderate to rapid\n       3 = moderate\n       4 = slow to moderate\n       5 = slow\n       6 = very slow\n")
+  } else if (type == "output values") {
+    cat("----- YOU ARE IN THE OUTPUT VALUES HELP FUNCTION. The output values given when executing this program are:\n")
+    cat("* SandUSDA: percentage of sand in the USDA system of the soil texture.\n")
+    cat("* ClayUSDA: percentage of clay in the USDA system of the soil texture.\n")
+    cat("* SiltUSDA: percentage of silt in the USDA system of the soil texture.\n")
+    cat("* O.M. : organic matter. Must be a value from 0.0 to 4.0 (included) with one decimal.")
+    cat("* Soil structure: must be a number from 1 to 4 with the following meanings: \n")
+    cat ("       1 = very fine granular\n       2 = fine granular\n       3 = moderate or coorse granular\n       4 = blocky, platy, or massive\n")
+    cat("* Permeability: must be a number from 1 to 6 with the following meanings: \n")
+    cat ("       1 = rapid\n       2 = moderate to rapid\n       3 = moderate\n       4 = slow to moderate\n       5 = slow\n       6 = very slow\n")
+    cat("*VFS_Q2: value of the second quartile for the very fine sand \n")
+    cat("*VFS_Q1: value of the first quartile for the very fine sand \n")
+    cat("*VFS_Q3: value of the third quartile for the very fine sand \n")
+    cat("*K_Q2_USDA: value of the second quartile for the K factor in the USDA system (units are (0,01 · ton · acre · h)/(acre · ft-tonf · in)) \n")
+    cat("*K_Q1_USDA: value of the first quartile for the K factor in the USDA system (units are (0,01 · ton · acre · h)/(acre · ft-tonf · in)) \n")
+    cat("*K_Q3_USDA: value of the third quartile for the K factor in the USDA system (units are (0,01 · ton · acre · h)/(acre · ft-tonf · in)) \n")
+    cat("*K_Q2_SI: value of the second quartile for the K factor in the SI system (units are (t · ha · h)/(MJ · ha · cm)) \n")
+    cat("*K_Q1_SI: value of the first quartile for the K factor in the SI system (units are (t · ha · h)/(MJ · ha · cm)) \n")
+    cat("*K_Q3_SI: value of the third quartile for the K factor in the SI system (units are (t · ha · h)/(MJ · ha · cm)) \n")
+  } else {
+    cat("YOU HAVE INTRODUCED A WRONG ARGUMENT TO THE HELP FUNCTION. THE OPTIONS ARE: \n")
+    cat("1. help_K() : For generic information\n")
+    cat("2. help_K(\"input values\") : Tells you information about how the input values must be\n")
+    cat("3. help_K(\"output values\") : Tells you information about how the output values are given\n")
+  }
+}
