@@ -40,7 +40,7 @@ computingK <- function(){
   vectorq1 <- rep(c(0),times=nrow(output_data))
   vectorq2 <- rep(c(0),times=nrow(output_data))
   vectorq3 <- rep(c(0),times=nrow(output_data))
-
+  check <- rep(c(0),times=nrow(output_data))
   
   for (i in 1:nrow(output_data)) {
     sand = output_data[i,1]
@@ -53,9 +53,19 @@ computingK <- function(){
     VFS2 = output_data[i,8]
     VFS1 = output_data[i,9]
     VFS3 = output_data[i,10]
-    
+    check[i] <- NA
     #First we check if this data is correct or not. If it is not correct, then the entries of VFS1, VFS2, VFS3 will be empty
-    if(is.na(VFS1) || is.na(VFS2) || is.na(VFS3)) {
+    if(decimalplaces(sand) || decimalplaces(silt) || decimalplaces(clay) || decimalplaces(VFS)) {
+      cat("WARNING! All SandUSDA, SiltUSDA, ClayUSDA and VFS_USDA must have at most 1 decimal. That data will be left with a blank space\n")
+      cat("The data of that wrong entry is: \n")
+      cat ( names(input_data[1]),":", sand, "\n", names(input_data[2]), ": ", silt ,"\n", names(input_data[3]),":", clay, "\n", names(input_data[4]),":", VFS ,"\n", names(input_data[5]),": ", a, "\n", names(input_data[6]), ": ", soil, "\n", names(input_data[7]), ": ", permeability,"\n")
+      vectorq1[i] <- NA
+      vectorq2[i] <- NA
+      vectorq3[i] <- NA
+    } else if (is.na(VFS1) || is.na(VFS2) || is.na(VFS3)) {
+      cat("Estimate of VFS not found for the following entry: \n")
+      cat ( names(input_data[1]),":", sand, "\n", names(input_data[2]), ": ", silt ,"\n", names(input_data[3]),":", clay, "\n", names(input_data[4]),":", VFS ,"\n", names(input_data[5]),": ", a, "\n", names(input_data[6]), ": ", soil, "\n", names(input_data[7]), ": ", permeability,"\n")
+      cat("That entry will be left with a blank space.\n")
       vectorq1[i] <- NA
       vectorq2[i] <- NA
       vectorq3[i] <- NA
@@ -66,9 +76,10 @@ computingK <- function(){
         # We also check for the organic matter
         
         if ((clay < 12 && silt > 80) || (clay > 40 && silt < 40) || (clay > 20 && clay <= 40 && sand > 45)) {
-          cat("WARNING! Texture out of scope of Factor K definition for the following entry: \n")
-          cat ( names(input_data[1]),":", sand, "\n", names(input_data[2]), ": ", silt ,"\n", names(input_data[3]),":", clay, "\n", names(input_data[4]),": ", a, "\n", names(input_data[4]), ": ", soil, "\n", names(input_data[5]), ": ", permeability,"\n")
+          cat("WARNING! Texture out of range of Factor K definition for the following entry: \n")
+          cat ( names(input_data[1]),":", sand, "\n", names(input_data[2]), ": ", silt ,"\n", names(input_data[3]),":", clay, "\n", names(input_data[4]),":", VFS ,"\n", names(input_data[5]),": ", a, "\n", names(input_data[6]), ": ", soil, "\n", names(input_data[7]), ": ", permeability,"\n")
           cat("An extrapolation is being done. \n")
+          check[i] <- 'EXTRAPOLATION-OUT OF RANGE'
         }
         
         if (is.na(VFS)) {
@@ -83,18 +94,24 @@ computingK <- function(){
             cat("The data of that wrong entry is: \n", names(input_data[1]),":", sand, "\n", names(input_data[2]), ": ", silt ,"\n", names(input_data[3]),":", clay, "\n", names(input_data[4]),": ", a, "\n", names(input_data[4]), ": ", soil, "\n", names(input_data[5]), ": ", permeability,"\n")
           }
         } else {
+          # Checking if VFS_USDA > SandUSDA
+          if (VFS > sand) {
+            cat('WARNING! VFS_USDA is greater than SandUSDA. Factor K is not being computed.')
+            vectorq2[i] <- NA
+          } else {
+            vectorq2[i] <- K_equations(VFS, silt, sand, a, soil, permeability)
+            if(is.na(vectorq2[i])) {
+              # If the output is NA, then the reason is because of the M parameter
+              
+              cat("WARNING! Result of parameter M is bigger tan 8000. You can call help() for generic information about the usage of this program. That data will be left with a blank space\n")
+              cat("The data of that wrong entry is: \n", names(input_data[1]),":", sand, "\n", names(input_data[2]), ": ", silt ,"\n", names(input_data[3]),":", clay, "\n", names(input_data[4]),": ", a, "\n", names(input_data[4]), ": ", soil, "\n", names(input_data[5]), ": ", permeability,"\n")
+            }
+          }
           output_data[i,8] <- NA
           output_data[i,9] <- NA
           output_data[i,10] <- NA
           vectorq1[i] <- NA
           vectorq3[i] <- NA
-          vectorq2[i] <- K_equations(VFS, silt, sand, a, soil, permeability)
-          if(is.na(vectorq2[i])) {
-            # If the output is NA, then the reason is because of the M parameter
-            
-            cat("WARNING! Result of parameter M is bigger tan 8000. You can call help() for generic information about the usage of this program. That data will be left with a blank space\n")
-            cat("The data of that wrong entry is: \n", names(input_data[1]),":", sand, "\n", names(input_data[2]), ": ", silt ,"\n", names(input_data[3]),":", clay, "\n", names(input_data[4]),": ", a, "\n", names(input_data[4]), ": ", soil, "\n", names(input_data[5]), ": ", permeability,"\n")
-          }
         }
         
       } else {
@@ -121,7 +138,6 @@ computingK <- function(){
       vectorq1[i] <- NA
       vectorq2[i] <- NA
       vectorq3[i] <- NA
-      vectorK[i] <- NA
     }
     
   }
@@ -139,7 +155,8 @@ computingK <- function(){
   output_data$FactorK_SI <- vectorq2IS
   output_data$FactorK_Q1_SI <- vectorq1IS
   output_data$FactorK_Q3_SI <- vectorq3IS
-
+  
+  output_data$Check <- check
   
   # Writing the resulting data
   
@@ -147,3 +164,4 @@ computingK <- function(){
   
   cat("---- Output data has been produced\n")
 }
+

@@ -29,3 +29,22 @@ K_equations <- function(AMF, silt, sand, a, b, c) {
   k = k1s + kp
   return(round(k, digits = 3))
 }
+
+
+decimalplaces <- function(x) {
+  if (is.na(x)) {
+    return(FALSE)
+  }
+  
+  if (abs(x - round(x)) > .Machine$double.eps^0.5) {
+    num = nchar(strsplit(sub('0+$', '', as.character(x)), ".", fixed = TRUE)[[1]][[2]])
+  } else {
+    num = 0
+  }
+  
+  if (num > 1) {
+    return(TRUE)
+  } else {
+    return(FALSE)
+  }
+}
